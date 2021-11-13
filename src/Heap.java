@@ -23,61 +23,89 @@ public class Heap<ValueType extends Comparable<? super ValueType>> implements It
             // Ne pas modifier ces lignes
 
             /* TODO Ajouter une ligne de code pour construire le heap */
-
+            buildHeap();
         }
 
         /* TODO Implementer le compare pour un MaxHeap et MinHeap */
         protected boolean compare(ValueType first, ValueType second){
-            return false;
+            return isMax ? second.compareTo(first) > 0 : second.compareTo(first) < 0;
         }
 
         /* TODO Retourner l'index du parent */
-        public int parentIndex(int index){
-            return -1;
+        public int parentIndex(int index) {
+            if (index != 1)
+                return index / 2;
+            else
+                return index;
         }
 
         /* TODO Retourner l'enfant gauche du noeud */
-        public int leftChildIndex(int index){
-            return -1;
+        public int leftChildIndex(int index) {
+            if (!isLeaf(index)) {
+                return index * 2;
+            }
+            return index;
         }
 
         /* TODO Retourner l'enfant droit du noeud */
         public int rightChildIndex(int index){
-            return -1;
+            if (!isLeaf(index))
+                return (index * 2) + 1;
+            return index;
         }
 
         /* TODO Retourner si l'index present est une feuille */
         public boolean isLeaf(int pos)
         {
-            return false;
+            return pos * 2 > size();
         }
 
         /* TODO Constuire le monceau avec les noeuds dans "elements" */
-        public void buildHeap(){
+        public void buildHeap() {
+            for( int i = size() / 2; i > 0; i-- ) {
+                percolateDown(i);
+            }
+
+//            if (!isMax) {
+                StringBuilder str = new StringBuilder("[ ");
+                for (ValueType element : elements) {
+                    str.append(element).append(" ");
+                }
+                str.append("]");
+                System.out.println(str);
+//            }
+
         }
 
         /* TODO Echanger les elements qui se retrouve aux indexes currentIndex et parentIndex */
         private void swap(int currentIndex, int parentIndex)
         {
+            Collections.swap(elements, currentIndex, parentIndex);
         }
 
         /* TODO Ajouter un element dans le monceaux. */
-        public void insert(ValueType value){
+        public void insert(ValueType value) {
+            elements.ensureCapacity(size() + 2);
+            elements.add(value);
+            int hole = size() + 1;
+            for( ; hole > 1 && compare(value, elements.get(hole/2)); hole /= 2) {
+                swap(hole, hole / 2);
+            }
         }
 
         /* TODO Completer l'implementation des conditions de percolateDown pour un heap */
-        private void percolateDown(int index){
+        private void percolateDown(int index) {
             int child;
             ValueType temp = elements.get(index);
-            for(; index * 2 < size() / 2; index = child){
+            for(; index * 2 < size(); index = child) {
 
                 child = index * 2;
 
-                if(child != size() /* TODO Ajouter une condition pour evaluer les deux noeuds */) {
+                if(child != size() && compare(elements.get(child), elements.get(child + 1)) ) {
                     child++;
                 }
 
-                if(true /*TODO Ajouter une condition pour evaluer les deux noeuds */){
+                if(compare(temp, elements.get(child))){
                     elements.set(index, elements.get(child));
                 }
                 else
