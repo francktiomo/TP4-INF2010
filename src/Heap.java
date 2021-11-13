@@ -1,3 +1,5 @@
+import com.sun.jdi.Value;
+
 import java.util.*;
 
 public class Heap<ValueType extends Comparable<? super ValueType>> implements Iterable<ValueType> {
@@ -129,7 +131,12 @@ public class Heap<ValueType extends Comparable<? super ValueType>> implements It
 
     /* TODO Ajouter les noeuds feuilles du monceau en utilisant isLeaf */
     public List<ValueType> getLeaves() {
-        return new ArrayList<>();
+        List<ValueType> leaves = new ArrayList<>();
+        for (ValueType element : elements) {
+            if (isLeaf(elements.indexOf(element)))
+                leaves.add(element);
+        }
+        return leaves;
     }
 
 }
